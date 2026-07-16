@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Identificación de Peligros - GTC 45</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d5c0d 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #90ee90;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .info-section {
+            background: rgba(0, 100, 0, 0.3);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-section label {
+            display: block;
+            color: #00ff00;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .info-section input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #00ff00;
+            font-size: 1em;
+        }
+
+        .info-section input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .danger-category {
+            background: rgba(0, 80, 0, 0.4);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .danger-category:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+
+        .category-icon {
+            font-size: 3em;
+            margin-right: 15px;
+        }
+
+        .category-title {
+            color: #00ff00;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .agent-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #33ff33;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .agent-name {
+            color: #90ee90;
+            font-size: 1.1em;
+            flex: 1;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #00ff00;
+        }
+
+        .radio-option label {
+            color: #b0ffb0;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .error-message {
+            color: #ff4444;
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ff00 0%, #00aa00 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #33ff33 0%, #00cc00 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transform: scale(1.02);
+        }
+
+        .report-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .report-title {
+            color: #00ff00;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: rgba(0, 80, 0, 0.5);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 3em;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .summary-label {
+            color: #90ee90;
+            margin-top: 10px;
+        }
+
+        .print-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00aa00 0%, #006600 100%);
+            color: #fff;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn:hover {
+            background: linear-gradient(135deg, #00cc00 0%, #008800 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .container {
+                border: 2px solid black;
+                box-shadow: none;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+
+        .detail-list {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-list h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            color: #90ee90;
+            padding: 8px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Encuesta de Identificación de Peligros</h1>
+        <div class="subtitle">Metodología GTC 45 - Guía para la Identificación de Peligros y Valoración de Riesgos</div>
+        
+        <div id="formSection">
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="info-section">
+                <div style="margin-bottom: 15px;">
+                    <label for="workerName">Nombre Completo del Trabajador:</label>
+                    <input type="text" id="workerName" required placeholder="Ingrese su nombre completo">
+                </div>
+                <div>
+                    <label for="surveyDate">Fecha de Diligenciamiento:</label>
+                    <input type="date" id="surveyDate" required>
+                </div>
+            </div>
+
+            <form id="dangerForm">
+                <!-- PELIGROS BIOLÓGICOS -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🦠</div>
+                        <div class="category-title">PELIGROS BIOLÓGICOS</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">🦟 Virus (COVID-19, gripe, hepatitis, etc.)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="virus" value="si" id="virus_si" required>
+                                <label for="virus_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="virus" value="no" id="virus_no">
+                                <label for="virus_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🦠 Bacterias (E.coli, salmonella, tuberculosis, etc.)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="bacterias" value="si" id="bacterias_si" required>
+                                <label for="bacterias_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="bacterias" value="no" id="bacterias_no">
+                                <label for="bacterias_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🍄 Hongos (moho, levaduras, micosis)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="hongos" value="si" id="hongos_si" required>
+                                <label for="hongos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="hongos" value="no" id="hongos_no">
+                                <label for="hongos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🐜 Parásitos (ácaros, piojos, garrapatas)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="parasitos" value="si" id="parasitos_si" required>
+                                <label for="parasitos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="parasitos" value="no" id="parasitos_no">
+                                <label for="parasitos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🐍 Picaduras y mordeduras (serpientes, arañas, insectos, roedores)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="picaduras" value="si" id="picaduras_si" required>
+                                <label for="picaduras_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="picaduras" value="no" id="picaduras_no">
+                                <label for="picaduras_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💉 Fluidos corporales y excrementos</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="fluidos" value="si" id="fluidos_si" required>
+                                <label for="fluidos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="fluidos" value="no" id="fluidos_no">
+                                <label for="fluidos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PELIGROS FÍSICOS -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">⚡</div>
+                        <div class="category-title">PELIGROS FÍSICOS</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">🔊 Ruido (continuo, intermitente, de impacto)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="ruido" value="si" id="ruido_si" required>
+                                <label for="ruido_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="ruido" value="no" id="ruido_no">
+                                <label for="ruido_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💡 Iluminación (deficiente o excesiva)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="iluminacion" value="si" id="iluminacion_si" required>
+                                <label for="iluminacion_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="iluminacion" value="no" id="iluminacion_no">
+                                <label for="iluminacion_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">📳 Vibraciones (cuerpo entero, segmentarias)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="vibraciones" value="si" id="vibraciones_si" required>
+                                <label for="vibraciones_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="vibraciones" value="no" id="vibraciones_no">
+                                <label for="vibraciones_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌡️ Temperaturas extremas (calor o frío)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="temperatura" value="si" id="temperatura_si" required>
+                                <label for="temperatura_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="temperatura" value="no" id="temperatura_no">
+                                <label for="temperatura_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏔️ Presión atmosférica (altura, profundidad)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="presion" value="si" id="presion_si" required>
+                                <label for="presion_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="presion" value="no" id="presion_no">
+                                <label for="presion_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">☢️ Radiaciones ionizantes (rayos X, gamma, alfa, beta)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="rad_ionizantes" value="si" id="rad_ionizantes_si" required>
+                                <label for="rad_ionizantes_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="rad_ionizantes" value="no" id="rad_ionizantes_no">
+                                <label for="rad_ionizantes_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">📡 Radiaciones no ionizantes (UV, IR, láser, microondas)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="rad_no_ionizantes" value="si" id="rad_no_ionizantes_si" required>
+                                <label for="rad_no_ionizantes_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="rad_no_ionizantes" value="no" id="rad_no_ionizantes_no">
+                                <label for="rad_no_ionizantes_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PELIGROS QUÍMICOS -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🧪</div>
+                        <div class="category-title">PELIGROS QUÍMICOS</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">🌾 Polvos orgánicos (madera, algodón, polen)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="polvos_organicos" value="si" id="polvos_organicos_si" required>
+                                <label for="polvos_organicos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="polvos_organicos" value="no" id="polvos_organicos_no">
+                                <label for="polvos_organicos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">⛏️ Polvos inorgánicos (sílice, asbesto, cemento)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="polvos_inorganicos" value="si" id="polvos_inorganicos_si" required>
+                                <label for="polvos_inorganicos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="polvos_inorganicos" value="no" id="polvos_inorganicos_no">
+                                <label for="polvos_inorganicos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🧵 Fibras (fibra de vidrio, asbesto)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="fibras" value="si" id="fibras_si" required>
+                                <label for="fibras_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="fibras" value="no" id="fibras_no">
+                                <label for="fibras_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💧 Líquidos (ácidos, solventes, combustibles)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="liquidos" value="si" id="liquidos_si" required>
+                                <label for="liquidos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="liquidos" value="no" id="liquidos_no">
+                                <label for="liquidos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💨 Gases y vapores (CO, SO2, vapores químicos)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="gases" value="si" id="gases_si" required>
+                                <label for="gases_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="gases" value="no" id="gases_no">
+                                <label for="gases_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏭 Humos metálicos (soldadura, fundición)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="humos" value="si" id="humos_si" required>
+                                <label for="humos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="humos" value="no" id="humos_no">
+                                <label for="humos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌫️ Material particulado (PM10, PM2.5, hollín)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="particulado" value="si" id="particulado_si" required>
+                                <label for="particulado_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="particulado" value="no" id="particulado_no">
+                                <label for="particulado_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PELIGROS PSICOSOCIALES -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🧠</div>
+                        <div class="category-title">PELIGROS PSICOSOCIALES</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">📊 Gestión organizacional (estilo de mando, evaluación de desempeño)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="gestion_org" value="si" id="gestion_org_si" required>
+                                <label for="gestion_org_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="gestion_org" value="no" id="gestion_org_no">
+                                <label for="gestion_org_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏢 Características de la organización del trabajo (jornadas, pausas, turnos)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="org_trabajo" value="si" id="org_trabajo_si" required>
+                                <label for="org_trabajo_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="org_trabajo" value="no" id="org_trabajo_no">
+                                <label for="org_trabajo_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">👥 Características del grupo social (relaciones, trabajo en equipo)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="grupo_social" value="si" id="grupo_social_si" required>
+                                <label for="grupo_social_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="grupo_social" value="no" id="grupo_social_no">
+                                <label for="grupo_social_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">✍️ Condiciones de la tarea (carga mental, responsabilidad, monotonía)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="condiciones_tarea" value="si" id="condiciones_tarea_si" required>
+                                <label for="condiciones_tarea_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="condiciones_tarea" value="no" id="condiciones_tarea_no">
+                                <label for="condiciones_tarea_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🖥️ Interfaz persona-tarea (claridad de funciones, capacitación)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="interfaz" value="si" id="interfaz_si" required>
+                                <label for="interfaz_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="interfaz" value="no" id="interfaz_no">
+                                <label for="interfaz_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">⏰ Jornada de trabajo (extensa, nocturna, horas extras)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="jornada" value="si" id="jornada_si" required>
+                                <label for="jornada_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="jornada" value="no" id="jornada_no">
+                                <label for="jornada_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">😰 Estrés laboral y acoso (mobbing, carga emocional)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="estres" value="si" id="estres_si" required>
+                                <label for="estres_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="estres" value="no" id="estres_no">
+                                <label for="estres_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PELIGROS BIOMECÁNICOS -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🦴</div>
+                        <div class="category-title">PELIGROS BIOMECÁNICOS</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">🪑 Posturas prolongadas (sedente, bipedestación)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="posturas" value="si" id="posturas_si" required>
+                                <label for="posturas_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="posturas" value="no" id="posturas_no">
+                                <label for="posturas_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🤸 Posturas forzadas (inclinación, torsión, flexión extrema)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="posturas_forzadas" value="si" id="posturas_forzadas_si" required>
+                                <label for="posturas_forzadas_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="posturas_forzadas" value="no" id="posturas_forzadas_no">
+                                <label for="posturas_forzadas_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💪 Esfuerzo físico (empujar, halar, levantar)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="esfuerzo" value="si" id="esfuerzo_si" required>
+                                <label for="esfuerzo_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="esfuerzo" value="no" id="esfuerzo_no">
+                                <label for="esfuerzo_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🔁 Movimientos repetitivos (manos, brazos)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="movimientos" value="si" id="movimientos_si" required>
+                                <label for="movimientos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="movimientos" value="no" id="movimientos_no">
+                                <label for="movimientos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">📦 Manipulación manual de cargas</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="cargas" value="si" id="cargas_si" required>
+                                <label for="cargas_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="cargas" value="no" id="cargas_no">
+                                <label for="cargas_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONDICIONES DE SEGURIDAD -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">⚠️</div>
+                        <div class="category-title">CONDICIONES DE SEGURIDAD</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">⚙️ Mecánico (atrapamiento, corte, proyección de partículas)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="mecanico" value="si" id="mecanico_si" required>
+                                <label for="mecanico_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="mecanico" value="no" id="mecanico_no">
+                                <label for="mecanico_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">⚡ Eléctrico (alta/baja tensión, electricidad estática)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="electrico" value="si" id="electrico_si" required>
+                                <label for="electrico_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="electrico" value="no" id="electrico_no">
+                                <label for="electrico_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏗️ Locativo (superficies irregulares, caídas, orden y aseo)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="locativo" value="si" id="locativo_si" required>
+                                <label for="locativo_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="locativo" value="no" id="locativo_no">
+                                <label for="locativo_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🔥 Tecnológico (explosión, fuga, incendio, derrame)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="tecnologico" value="si" id="tecnologico_si" required>
+                                <label for="tecnologico_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="tecnologico" value="no" id="tecnologico_no">
+                                <label for="tecnologico_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🚗 Accidentes de tránsito</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="transito" value="si" id="transito_si" required>
+                                <label for="transito_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="transito" value="no" id="transito_no">
+                                <label for="transito_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🔫 Públicos (robos, atracos, asonadas, atentados)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="publicos" value="si" id="publicos_si" required>
+                                <label for="publicos_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="publicos" value="no" id="publicos_no">
+                                <label for="publicos_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🪜 Trabajo en alturas</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="alturas" value="si" id="alturas_si" required>
+                                <label for="alturas_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="alturas" value="no" id="alturas_no">
+                                <label for="alturas_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🚪 Espacios confinados</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="confinados" value="si" id="confinados_si" required>
+                                <label for="confinados_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="confinados" value="no" id="confinados_no">
+                                <label for="confinados_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌊 Trabajo en inmersión</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="inmersion" value="si" id="inmersion_si" required>
+                                <label for="inmersion_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="inmersion" value="no" id="inmersion_no">
+                                <label for="inmersion_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FENÓMENOS NATURALES -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🌪️</div>
+                        <div class="category-title">FENÓMENOS NATURALES</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">📐 Sismo y terremoto</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="sismo" value="si" id="sismo_si" required>
+                                <label for="sismo_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="sismo" value="no" id="sismo_no">
+                                <label for="sismo_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💨 Vendaval y huracanes</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="vendaval" value="si" id="vendaval_si" required>
+                                <label for="vendaval_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="vendaval" value="no" id="vendaval_no">
+                                <label for="vendaval_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌊 Inundación</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="inundacion" value="si" id="inundacion_si" required>
+                                <label for="inundacion_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="inundacion" value="no" id="inundacion_no">
+                                <label for="inundacion_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏔️ Derrumbe y deslizamiento</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="derrumbe" value="si" id="derrumbe_si" required>
+                                <label for="derrumbe_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="derrumbe" value="no" id="derrumbe_no">
+                                <label for="derrumbe_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌧️ Precipitaciones (lluvias, granizo, nieve)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="precipitaciones" value="si" id="precipitaciones_si" required>
+                                <label for="precipitaciones_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="precipitaciones" value="no" id="precipitaciones_no">
+                                <label for="precipitaciones_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">⚡ Tormentas eléctricas</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="tormentas" value="si" id="tormentas_si" required>
+                                <label for="tormentas_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="tormentas" value="no" id="tormentas_no">
+                                <label for="tormentas_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIESGOS DE TRABAJO EN CASA -->
+                <div class="danger-category">
+                    <div class="category-header">
+                        <div class="category-icon">🏠</div>
+                        <div class="category-title">RIESGOS DE TRABAJO EN CASA (TELETRABAJO)</div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-name">💻 Puesto de trabajo inadecuado (silla, escritorio, pantalla)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="puesto_casa" value="si" id="puesto_casa_si" required>
+                                <label for="puesto_casa_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="puesto_casa" value="no" id="puesto_casa_no">
+                                <label for="puesto_casa_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">💡 Iluminación inadecuada en el hogar</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="iluminacion_casa" value="si" id="iluminacion_casa_si" required>
+                                <label for="iluminacion_casa_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="iluminacion_casa" value="no" id="iluminacion_casa_no">
+                                <label for="iluminacion_casa_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🔌 Riesgos eléctricos en el hogar (instalaciones defectuosas)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="electrico_casa" value="si" id="electrico_casa_si" required>
+                                <label for="electrico_casa_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="electrico_casa" value="no" id="electrico_casa_no">
+                                <label for="electrico_casa_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">😔 Aislamiento y falta de interacción social</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="aislamiento" value="si" id="aislamiento_si" required>
+                                <label for="aislamiento_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="aislamiento" value="no" id="aislamiento_no">
+                                <label for="aislamiento_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">⏰ Dificultad para separar vida laboral y personal</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="separacion" value="si" id="separacion_si" required>
+                                <label for="separacion_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="separacion" value="no" id="separacion_no">
+                                <label for="separacion_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">📱 Fatiga visual y tecnoestrés</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="fatiga_visual" value="si" id="fatiga_visual_si" required>
+                                <label for="fatiga_visual_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="fatiga_visual" value="no" id="fatiga_visual_no">
+                                <label for="fatiga_visual_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🏠 Riesgos locativos en el hogar (pisos resbalosos, escaleras)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="locativo_casa" value="si" id="locativo_casa_si" required>
+                                <label for="locativo_casa_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="locativo_casa" value="no" id="locativo_casa_no">
+                                <label for="locativo_casa_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-item">
+                        <div class="agent-name">🌡️ Condiciones ambientales (temperatura, ventilación)</div>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="ambiente_casa" value="si" id="ambiente_casa_si" required>
+                                <label for="ambiente_casa_si">Sí expuesto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="ambiente_casa" value="no" id="ambiente_casa_no">
+                                <label for="ambiente_casa_no">No expuesto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">🚀 Generar Informe de Riesgos</button>
+            </form>
+        </div>
+
+        <div id="reportSection" class="report-section">
+            <div class="report-header">
+                <h2 class="report-title">📊 Informe de Identificación de Peligros</h2>
+                <p id="reportInfo" style="color: #90ee90; text-align: center;"></p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-number" id="totalExposed">0</div>
+                    <div class="summary-label">Peligros Identificados</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="totalNotExposed">0</div>
+                    <div class="summary-label">Peligros No Presentes</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="exposurePercentage">0%</div>
+                    <div class="summary-label">Porcentaje de Exposición</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Exposición por Categoría de Peligro</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Comparación General de Exposición</h3>
+                <canvas id="overallChart"></canvas>
+            </div>
+
+            <div class="detail-list">
+                <h3>✅ Peligros a los que SÍ está expuesto:</h3>
+                <div id="exposedList"></div>
+            </div>
+
+            <div class="detail-list">
+                <h3>❌ Peligros a los que NO está expuesto:</h3>
+                <div id="notExposedList"></div>
+            </div>
+
+            <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Descargar Informe</button>
+        </div>
+    </div>
+
+    <script>
+        // Configurar fecha actual por defecto
+        document.getElementById('surveyDate').valueAsDate = new Date();
+
+        // Datos de peligros organizados por categoría
+        const dangerCategories = {
+            'BIOLÓGICOS': ['virus', 'bacterias', 'hongos', 'parasitos', 'picaduras', 'fluidos'],
+            'FÍSICOS': ['ruido', 'iluminacion', 'vibraciones', 'temperatura', 'presion', 'rad_ionizantes', 'rad_no_ionizantes'],
+            'QUÍMICOS': ['polvos_organicos', 'polvos_inorganicos', 'fibras', 'liquidos', 'gases', 'humos', 'particulado'],
+            'PSICOSOCIALES': ['gestion_org', 'org_trabajo', 'grupo_social', 'condiciones_tarea', 'interfaz', 'jornada', 'estres'],
+            'BIOMECÁNICOS': ['posturas', 'posturas_forzadas', 'esfuerzo', 'movimientos', 'cargas'],
+            'CONDICIONES DE SEGURIDAD': ['mecanico', 'electrico', 'locativo', 'tecnologico', 'transito', 'publicos', 'alturas', 'confinados', 'inmersion'],
+            'FENÓMENOS NATURALES': ['sismo', 'vendaval', 'inundacion', 'derrumbe', 'precipitaciones', 'tormentas'],
+            'TRABAJO EN CASA': ['puesto_casa', 'iluminacion_casa', 'electrico_casa', 'aislamiento', 'separacion', 'fatiga_visual', 'locativo_casa', 'ambiente_casa']
+        };
+
+        const dangerLabels = {
+            'virus': 'Virus',
+            'bacterias': 'Bacterias',
+            'hongos': 'Hongos',
+            'parasitos': 'Parásitos',
+            'picaduras': 'Picaduras y mordeduras',
+            'fluidos': 'Fluidos corporales y excrementos',
+            'ruido': 'Ruido',
+            'iluminacion': 'Iluminación',
+            'vibraciones': 'Vibraciones',
+            'temperatura': 'Temperaturas extremas',
+            'presion': 'Presión atmosférica',
+            'rad_ionizantes': 'Radiaciones ionizantes',
+            'rad_no_ionizantes': 'Radiaciones no ionizantes',
+            'polvos_organicos': 'Polvos orgánicos',
+            'polvos_inorganicos': 'Polvos inorgánicos',
+            'fibras': 'Fibras',
+            'liquidos': 'Líquidos químicos',
+            'gases': 'Gases y vapores',
+            'humos': 'Humos metálicos',
+            'particulado': 'Material particulado',
+            'gestion_org': 'Gestión organizacional',
+            'org_trabajo': 'Organización del trabajo',
+            'grupo_social': 'Grupo social',
+            'condiciones_tarea': 'Condiciones de la tarea',
+            'interfaz': 'Interfaz persona-tarea',
+            'jornada': 'Jornada de trabajo',
+            'estres': 'Estrés laboral y acoso',
+            'posturas': 'Posturas prolongadas',
+            'posturas_forzadas': 'Posturas forzadas',
+            'esfuerzo': 'Esfuerzo físico',
+            'movimientos': 'Movimientos repetitivos',
+            'cargas': 'Manipulación de cargas',
+            'mecanico': 'Riesgo mecánico',
+            'electrico': 'Riesgo eléctrico',
+            'locativo': 'Riesgo locativo',
+            'tecnologico': 'Riesgo tecnológico',
+            'transito': 'Accidentes de tránsito',
+            'publicos': 'Riesgos públicos',
+            'alturas': 'Trabajo en alturas',
+            'confinados': 'Espacios confinados',
+            'inmersion': 'Trabajo en inmersión',
+            'sismo': 'Sismo y terremoto',
+            'vendaval': 'Vendaval y huracanes',
+            'inundacion': 'Inundación',
+            'derrumbe': 'Derrumbe y deslizamiento',
+            'precipitaciones': 'Precipitaciones',
+            'tormentas': 'Tormentas eléctricas',
+            'puesto_casa': 'Puesto de trabajo inadecuado',
+            'iluminacion_casa': 'Iluminación inadecuada en el hogar',
+            'electrico_casa': 'Riesgos eléctricos en el hogar',
+            'aislamiento': 'Aislamiento social',
+            'separacion': 'Dificultad para separar vida laboral/personal',
+            'fatiga_visual': 'Fatiga visual y tecnoestrés',
+            'locativo_casa': 'Riesgos locativos en el hogar',
+            'ambiente_casa': 'Condiciones ambientales inadecuadas'
+        };
+
+        document.getElementById('dangerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const workerName = document.getElementById('workerName').value.trim();
+            const surveyDate = document.getElementById('surveyDate').value;
+            
+            if (!workerName || !surveyDate) {
+                showError('Por favor complete el nombre del trabajador y la fecha.');
+                return;
+            }
+
+            // Validar que todos los radio buttons estén respondidos
+            let allAnswered = true;
+            for (let category in dangerCategories) {
+                for (let danger of dangerCategories[category]) {
+                    const radioButtons = document.getElementsByName(danger);
+                    let isAnswered = false;
+                    for (let radio of radioButtons) {
+                        if (radio.checked) {
+                            isAnswered = true;
+                            break;
+                        }
+                    }
+                    if (!isAnswered) {
+                        allAnswered = false;
+                        break;
+                    }
+                }
+                if (!allAnswered) break;
+            }
+
+            if (!allAnswered) {
+                showError('Por favor responda todas las preguntas antes de generar el informe.');
+                return;
+            }
+
+            generateReport(workerName, surveyDate);
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function generateReport(workerName, surveyDate) {
+            const formData = {};
+            let totalExposed = 0;
+            let totalNotExposed = 0;
+            const exposedList = [];
+            const notExposedList = [];
+            const categoryData = {};
+
+            // Inicializar contadores por categoría
+            for (let category in dangerCategories) {
+                categoryData[category] = { exposed: 0, notExposed: 0 };
+            }
+
+            // Recopilar datos
+            for (let category in dangerCategories) {
+                for (let danger of dangerCategories[category]) {
+                    const value = document.querySelector(`input[name="${danger}"]:checked`).value;
+                    formData[danger] = value;
+                    
+                    if (value === 'si') {
+                        totalExposed++;
+                        exposedList.push(dangerLabels[danger]);
+                        categoryData[category].exposed++;
+                    } else {
+                        totalNotExposed++;
+                        notExposedList.push(dangerLabels[danger]);
+                        categoryData[category].notExposed++;
+                    }
+                }
+            }
+
+            const total = totalExposed + totalNotExposed;
+            const exposurePercentage = ((totalExposed / total) * 100).toFixed(1);
+
+            // Actualizar resumen
+            document.getElementById('reportInfo').textContent = `Trabajador: ${workerName} | Fecha: ${new Date(surveyDate).toLocaleDateString('es-CO')}`;
+            document.getElementById('totalExposed').textContent = totalExposed;
+            document.getElementById('totalNotExposed').textContent = totalNotExposed;
+            document.getElementById('exposurePercentage').textContent = exposurePercentage + '%';
+
+            // Listas detalladas
+            const exposedListDiv = document.getElementById('exposedList');
+            exposedListDiv.innerHTML = exposedList.map(item => `<div class="detail-item">• ${item}</div>`).join('');
+
+            const notExposedListDiv = document.getElementById('notExposedList');
+            notExposedListDiv.innerHTML = notExposedList.map(item => `<div class="detail-item">• ${item}</div>`).join('');
+
+            // Gráfico por categoría
+            const categoryLabels = Object.keys(categoryData);
+            const categoryExposedData = categoryLabels.map(cat => categoryData[cat].exposed);
+            const categoryNotExposedData = categoryLabels.map(cat => categoryData[cat].notExposed);
+
+            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            
+            // Destruir gráfico anterior si existe
+            if (window.categoryChartInstance) {
+                window.categoryChartInstance.destroy();
+            }
+
+            window.categoryChartInstance = new Chart(ctxCategory, {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [
+                        {
+                            label: 'Sí Expuesto',
+                            data: categoryExposedData,
+                            backgroundColor: 'rgba(0, 255, 0, 0.7)',
+                            borderColor: 'rgba(0, 255, 0, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'No Expuesto',
+                            data: categoryNotExposedData,
+                            backgroundColor: 'rgba(100, 100, 100, 0.7)',
+                            borderColor: 'rgba(150, 150, 150, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#00ff00',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#00ff00',
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 255, 0, 0.2)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#00ff00',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                color: 'rgba(0, 255, 0, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico general (pie chart)
+            const ctxOverall = document.getElementById('overallChart').getContext('2d');
+            
+            if (window.overallChartInstance) {
+                window.overallChartInstance.destroy();
+            }
+
+            window.overallChartInstance = new Chart(ctxOverall, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sí Expuesto', 'No Expuesto'],
+                    datasets: [{
+                        data: [totalExposed, totalNotExposed],
+                        backgroundColor: [
+                            'rgba(0, 255, 0, 0.8)',
+                            'rgba(100, 100, 100, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 255, 0, 1)',
+                            'rgba(150, 150, 150, 1)'
+                        ],
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#00ff00',
+                                font: {
+                                    size: 16
+                                },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Mostrar el reporte
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('reportSection').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
